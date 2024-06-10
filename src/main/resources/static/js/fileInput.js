@@ -82,21 +82,29 @@ function setupFileInput(chooser) {
   document.body.addEventListener("drop", dropListener);
 
   $("#" + elementId).on("change", function (e) {
-    //Get newly Added Files
-    const newFiles = Array.from(e.target.files);
 
-    //Add Files to existing Files
-    allFiles = allFiles.concat(newFiles);
+    console.log("multiple ",window.multiple);
+    if (window.multiple){
+      //Get newly Added Files
+      const newFiles = Array.from(e.target.files);
 
-    //Update the file inout`s files property
-    const dataTransfer = new DataTransfer();
-    allFiles.forEach((file) => dataTransfer.items.add(file));
-    e.target.files = dataTransfer.files;
+      //Add Files to existing Files
+      allFiles = allFiles.concat(newFiles);
 
-    handleFileInputChange(this);
+      //Update the file input`s files property
+      const dataTransfer = new DataTransfer();
+      allFiles.forEach((file) => dataTransfer.items.add(file));
+      e.target.files = dataTransfer.files;
 
-    //Call the displayFiles function with the allFiles array
-    displayFiles(allFiles)
+      handleFileInputChange(this);
+
+      //Call the displayFiles function with the allFiles array
+      displayFiles(allFiles)
+    } else {
+      allFiles = Array.from(e.target.files);
+      handleFileInputChange(this);
+    }
+
   });
 
   function handleFileInputChange(inputElement) {
