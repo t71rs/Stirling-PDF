@@ -12,18 +12,48 @@ document.getElementById("fileInput-input").addEventListener("change", function (
  * @param {FileList} files
  */
 function displayFiles(files) {
+  // Remove all duplicate warnings
+  const warnings = document.querySelectorAll('.duplicate-warning');
+  warnings.forEach((warning) => {
+    warning.remove();
+  });
   const list = document.getElementById("selectedFiles");
 
   while (list.firstChild) {
     list.removeChild(list.firstChild);
   }
 
+  //log content of files
+  for (let i = 0; i < files.length; i++) {
+    console.log(files[i].name);
+  }
+  //Duplicate Checking
+  let size = files.length;
+  let duplicateFiles = [...Array(size)].fill(0);
+
+  for (let i = 0; i < files.length; i++) {
+    for (let j = i + 1; j < files.length; j++) {
+      if (files[i].name === files[j].name) {
+        duplicateFiles[j] = 1;
+      }
+    }
+  }
   for (let i = 0; i < files.length; i++) {
     const item = document.createElement("li");
     item.className = "list-group-item";
+    const fileNameDiv = document.createElement("div");
+    fileNameDiv.className = "filename";
+    fileNameDiv.textContent = files[i].name;
+    if (duplicateFiles[i] === 1) {
+      const warning = document.createElement("span");
+      warning.className = "duplicate-warning";
+      warning.textContent = "Duplicate";
+      fileNameDiv.appendChild(warning);
+    }
+
     item.innerHTML = `
             <div class="d-flex justify-content-between align-items-center w-100">
-                <div class="filename">${files[i].name}</div>
+                ${fileNameDiv.outerHTML}
                 <div class="arrows d-flex">
                     <button class="btn btn-secondary move-up"><span>&uarr;</span></button>
                     <button class="btn btn-secondary move-down"><span>&darr;</span></button>
